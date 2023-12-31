@@ -97,6 +97,7 @@ class LoginView extends GetView<LoginController> {
                             SubmitButton(
                               onSubmit: controller.onSubmitLogin,
                               text: "LOGIN",
+                              isLoading: controller.isLoading.value,
                             ),
                             const Separator(
                               height: 12,

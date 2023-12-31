@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nusantara_infrastructure_application_test/app/constants/api_endpoints.dart';
 import 'package:nusantara_infrastructure_application_test/app/data/services/network_service.dart';
+import 'package:nusantara_infrastructure_application_test/app/modules/shared/widgets/error_dialog.dart';
 import 'package:nusantara_infrastructure_application_test/app/routes/app_pages.dart';
 
 class RegisterController extends GetxController {
@@ -74,69 +75,35 @@ class RegisterController extends GetxController {
       "password_confirmation": passwordConfirmationController.value.text,
     };
 
-    late final dynamic response;
-
     setLoader(true);
     try {
-      response = await NetworkService.post(
+      final response = await NetworkService.post(
         endpoint: ApiEndpoints.REGISTER_ENDPOINT,
         body: body,
       );
+
+      if (response['message'] == "The email has already been taken.") {
+        Get.dialog(
+          const ErrorDialog(
+            title: "Email already taken",
+            message: "Please register with different email address",
+          ),
+        );
+        return;
+      }
     } catch (error) {
-      showErrorDialog(
-        title: "Unknown error",
-        message: "An unknown error occurred. Please try again later",
+      Get.dialog(
+        const ErrorDialog(
+          title: "Unknown error",
+          message: "An unknown error occurred. Please try again later",
+        ),
       );
       return;
     } finally {
       setLoader(false);
     }
 
-    if (response['message'] == "The email has already been taken.") {
-      showErrorDialog(
-        title: "Email already taken",
-        message: "Please register different email",
-      );
-      return;
-    }
-
     Get.offAllNamed(Routes.LOGIN);
-  }
-
-  void showErrorDialog({
-    required String title,
-    required String message,
-  }) {
-    Get.defaultDialog(
-      content: Text(
-        message,
-        style: Get.theme.textTheme.bodyMedium!.copyWith(
-          color: Get.theme.colorScheme.onBackground,
-        ),
-      ),
-      title: title,
-      titlePadding: const EdgeInsets.only(top: 24),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 24,
-        vertical: 12,
-      ),
-      titleStyle: Get.theme.textTheme.titleLarge!.copyWith(
-        color: Get.theme.colorScheme.onBackground,
-      ),
-      actions: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: const Text("OK"),
-            ),
-          ],
-        ),
-      ],
-    );
   }
 
   void onNavigateToLogin() {

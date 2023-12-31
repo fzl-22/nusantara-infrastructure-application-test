@@ -12,11 +12,19 @@ class HomeView extends GetView<HomeController> {
       appBar: AppBar(
         title: const Text('HomeView'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: controller.onSubmitLogout,
+            icon: const Icon(Icons.logout),
+          ),
+        ],
       ),
-      body: const Center(
+      body: Center(
         child: Text(
-          'HomeView is working',
-          style: TextStyle(fontSize: 20),
+          'Token: ${controller.token}',
+          style: Get.theme.textTheme.titleMedium!.copyWith(
+            color: Get.theme.colorScheme.primary,
+          ),
         ),
       ),
     );

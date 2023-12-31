@@ -31,4 +31,27 @@ class NetworkService {
       rethrow;
     }
   }
+
+  static Future<dynamic> delete({
+    required String endpoint,
+    required String token,
+  }) async {
+    try {
+      final response = await _dio.delete(
+        endpoint,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer $token",
+          },
+          validateStatus: (status) => status! < 500,
+        ),
+      );
+
+      return response.data;
+    } catch (error) {
+      rethrow;
+    }
+  }
 }
