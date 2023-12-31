@@ -6,4 +6,5 @@ class ApiEndpoints {
   static String get REGISTER_ENDPOINT => "$BASE_URL/api/register";
   static String get LOGIN_ENDPOINT => "$BASE_URL/api/login";
   static String get LOGOUT_ENDPOINT => "$BASE_URL/api/user/logout";
+  static String get GETUSER_ENDPOINT => "$BASE_URL/api/user";
 }
