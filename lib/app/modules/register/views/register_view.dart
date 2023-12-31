@@ -25,7 +25,7 @@ class RegisterView extends GetView<RegisterController> {
               child: Image.asset(
                 "assets/images/register/register-illustration.png",
                 fit: BoxFit.contain,
-                height: 0.3 * MediaQuery.of(context).size.height,
+                height: 0.2 * MediaQuery.of(context).size.height,
               ),
             ),
             Expanded(
@@ -80,6 +80,15 @@ class RegisterView extends GetView<RegisterController> {
                               height: 32,
                             ),
                             InputField(
+                              controller: controller.nameController.value,
+                              hintText: "Name",
+                              keyboardType: TextInputType.name,
+                              validator: controller.nameValidator,
+                            ),
+                            const Separator(
+                              height: 12,
+                            ),
+                            InputField(
                               controller: controller.emailController.value,
                               hintText: "Email",
                               keyboardType: TextInputType.emailAddress,
@@ -98,11 +107,12 @@ class RegisterView extends GetView<RegisterController> {
                               height: 12,
                             ),
                             InputField.password(
-                              controller:
-                                  controller.confirmPasswordController.value,
+                              controller: controller
+                                  .passwordConfirmationController.value,
                               hintText: "Confirm Password",
                               keyboardType: TextInputType.visiblePassword,
-                              validator: controller.confirmPasswordValidator,
+                              validator:
+                                  controller.passwordConfirmationValidator,
                             ),
                             const Separator(
                               height: 12,
@@ -110,6 +120,7 @@ class RegisterView extends GetView<RegisterController> {
                             SubmitButton(
                               onSubmit: controller.onSubmitRegister,
                               text: "REGISTER",
+                              isLoading: controller.isLoading.value,
                             ),
                             const Separator(
                               height: 12,

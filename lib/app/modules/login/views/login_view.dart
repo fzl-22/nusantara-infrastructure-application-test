@@ -23,7 +23,7 @@ class LoginView extends GetView<LoginController> {
               child: Image.asset(
                 "assets/images/login/login-illustration.png",
                 fit: BoxFit.contain,
-                height: 0.3 * MediaQuery.of(context).size.height,
+                height: 0.2 * MediaQuery.of(context).size.height,
               ),
             ),
             Expanded(

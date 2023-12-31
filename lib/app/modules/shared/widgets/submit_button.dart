@@ -5,10 +5,12 @@ class SubmitButton extends StatelessWidget {
     super.key,
     required this.onSubmit,
     required this.text,
+    this.isLoading = false,
   });
 
   final VoidCallback onSubmit;
   final String text;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,15 @@ class SubmitButton extends StatelessWidget {
         padding: const EdgeInsets.all(12),
       ),
       onPressed: onSubmit,
-      child: Text(text),
+      child: isLoading
+          ? SizedBox(
+              height: 24,
+              width: 24,
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            )
+          : Text(text),
     );
   }
 }

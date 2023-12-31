@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nusantara_infrastructure_application_test/app/constants/api_endpoints.dart';
+import 'package:nusantara_infrastructure_application_test/app/data/services/network_service.dart';
 import 'package:nusantara_infrastructure_application_test/app/routes/app_pages.dart';
 
 class RegisterController extends GetxController {
   final formKey = GlobalKey<FormState>().obs;
+  final nameController = TextEditingController().obs;
   final emailController = TextEditingController().obs;
   final passwordController = TextEditingController().obs;
-  final confirmPasswordController = TextEditingController().obs;
+  final passwordConfirmationController = TextEditingController().obs;
+  final isLoading = false.obs;
+
+  String? nameValidator(String? name) {
+    if (name == null || name.isEmpty) {
+      return "Name must not be empty";
+    }
+
+    return null;
+  }
 
   String? emailValidator(String? email) {
     if (email == null || email.isEmpty) {
@@ -36,27 +48,102 @@ class RegisterController extends GetxController {
     return null;
   }
 
-  String? confirmPasswordValidator(String? confirmedPassword) {
-    if (confirmedPassword == null || confirmedPassword.isEmpty) {
+  String? passwordConfirmationValidator(String? passwordConfirmation) {
+    if (passwordConfirmation == null || passwordConfirmation.isEmpty) {
       return "Confirmed password must not be empty";
     }
 
-    if (confirmedPassword != passwordController.value.text) {
+    if (passwordConfirmation != passwordController.value.text) {
       return "Passwords not matched";
     }
 
     return null;
   }
 
-  void onSubmitRegister() {
+  void onSubmitRegister() async {
     formKey.value.currentState!.save();
 
     if (!formKey.value.currentState!.validate()) {
       return;
     }
+
+    Map<String, dynamic> body = {
+      "name": nameController.value.text,
+      "email": emailController.value.text,
+      "password": passwordController.value.text,
+      "password_confirmation": passwordConfirmationController.value.text,
+    };
+
+    late final dynamic response;
+
+    setLoader(true);
+    try {
+      response = await NetworkService.post(
+        endpoint: ApiEndpoints.REGISTER_ENDPOINT,
+        body: body,
+      );
+    } catch (error) {
+      showErrorDialog(
+        title: "Unknown error",
+        message: "An unknown error occurred. Please try again later",
+      );
+      return;
+    } finally {
+      setLoader(false);
+    }
+
+    if (response['message'] == "The email has already been taken.") {
+      showErrorDialog(
+        title: "Email already taken",
+        message: "Please register different email",
+      );
+      return;
+    }
+
+    Get.offAllNamed(Routes.LOGIN);
+  }
+
+  void showErrorDialog({
+    required String title,
+    required String message,
+  }) {
+    Get.defaultDialog(
+      content: Text(
+        message,
+        style: Get.theme.textTheme.bodyMedium!.copyWith(
+          color: Get.theme.colorScheme.onBackground,
+        ),
+      ),
+      title: title,
+      titlePadding: const EdgeInsets.only(top: 24),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 24,
+        vertical: 12,
+      ),
+      titleStyle: Get.theme.textTheme.titleLarge!.copyWith(
+        color: Get.theme.colorScheme.onBackground,
+      ),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   void onNavigateToLogin() {
-    Get.offAndToNamed(Routes.LOGIN);
+    Get.offAllNamed(Routes.LOGIN);
+  }
+
+  void setLoader(bool loader) {
+    isLoading.value = !isLoading.value;
   }
 }

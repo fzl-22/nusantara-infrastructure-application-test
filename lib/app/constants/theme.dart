@@ -31,6 +31,11 @@ class AppTheme {
         fontWeight: FontWeight.normal,
         fontFamily: GoogleFonts.lato().fontFamily,
       ),
+      titleMedium: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        fontFamily: GoogleFonts.lato().fontFamily,
+      ),
       labelLarge: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.bold,

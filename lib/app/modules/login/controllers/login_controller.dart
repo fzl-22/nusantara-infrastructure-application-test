@@ -32,6 +32,6 @@ class LoginController extends GetxController {
   }
 
   void onNavigateToRegister() {
-    Get.offAndToNamed(Routes.REGISTER);
+    Get.offAllNamed(Routes.REGISTER);
   }
 }
